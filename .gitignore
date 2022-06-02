@@ -2,3 +2,9 @@
 node_modules
 dist
 tests
+
+# local temporary files
+custom-elements.json
+
+.DS_Store
+Thumbs.db
