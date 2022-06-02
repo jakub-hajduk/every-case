@@ -1,0 +1,39 @@
+{
+  "name": "every-case",
+  "version": "0.0.1",
+  "description": "Tool for generating web-components stories with all cases of usage",
+  "main": "src/main.ts",
+  "scripts": {
+    "start": "npm run build -- --watch",
+    "build": "esbuild src/main.ts --outfile=dist/main.js --bundle --target=node16 --format=cjs --platform=node",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github-devhajduk:jakub-hajduk/every-case.git"
+  },
+  "keywords": [
+    "custom",
+    "elements",
+    "manifest",
+    "custom",
+    "elements",
+    "web",
+    "components",
+    "component",
+    "permutations",
+    "stories"
+  ],
+  "author": "Jakub Hajduk",
+  "license": "ISC",
+  "dependencies": {
+    "cartesian": "^1.0.1",
+    "closest-package": "^1.0.0",
+    "esbuild": "^0.14.42",
+    "tiny-glob": "^0.2.9"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.36",
+    "custom-elements-manifest": "^1.0.0"
+  }
+}
