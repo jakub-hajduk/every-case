@@ -1,10 +1,9 @@
 .idea
 node_modules
 dist
-tests
 
 # local temporary files
-custom-elements.json
+elements
 
 .DS_Store
 Thumbs.db

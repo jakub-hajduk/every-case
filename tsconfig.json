@@ -1,5 +1,12 @@
 {
   "compilerOptions": {
+    "outDir": "dist",
+    "declaration": true,
+    "emitDeclarationOnly": true,
     "esModuleInterop": true
-  }
+  },
+  "files": [
+    "src/index.ts"
+  ],
+  "exclude": ["node_modules"]
 }
