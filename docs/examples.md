@@ -10,6 +10,16 @@ const attributes = ec.attributes('my-button')
 // ['variant', 'size', 'href']
 ```
 
+## Get tagNames of all declared custom elements
+```javascript
+const everyCase = require('everyCase')
+const ec = everyCase()
+
+const tagNames = ec.tagNames()
+
+// ['my-button']
+```
+
 ## Get all combinations for given element
 
 ```javascript

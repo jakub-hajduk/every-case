@@ -1,5 +1,5 @@
 const packageJson = require('../package.json');
-const { writeFileSync } = require('fs');
+const { writeFileSync, copyFileSync} = require('fs');
 
 const {
   name,
@@ -27,3 +27,6 @@ writeFileSync(
   JSON.stringify(finalPackageJson, null, 2),
   {encoding: 'utf8'}
 )
+
+copyFileSync('README.md', 'dist/README.md')
+copyFileSync('docs/examples.md', 'dist/docs/examples.md')
