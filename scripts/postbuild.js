@@ -1,5 +1,5 @@
 const packageJson = require('../package.json');
-const { writeFileSync, copyFileSync} = require('fs');
+const { writeFileSync, copyFileSync, mkdirSync} = require('fs');
 
 const {
   name,
@@ -29,4 +29,5 @@ writeFileSync(
 )
 
 copyFileSync('README.md', 'dist/README.md')
+mkdirSync('dist/docs/')
 copyFileSync('docs/examples.md', 'dist/docs/examples.md')
