@@ -40,6 +40,7 @@ export interface RenderOptions extends CombinationsOptions {
 const isObject = (a): a is object => Object.prototype.toString.call(a) === '[object Object]'
 const isArray = <T = any>(a): a is Array<T> => Array.isArray(a)
 const isString = (a): a is string => typeof a === 'string'
+const isCustomElement = (a): a is CustomElement => a.customElement === true
 
 const sortObject = (obj: object): object => {
   return Object.keys(obj).sort().reduce(function (result, key) {
@@ -170,6 +171,19 @@ export const attributes = (manifest: Package, tagName: string) => {
   console.error(`Couldn't find ${tagName} element.`)
 }
 
+export const tagNames = (manifest: Package) => {
+  const out: CustomElement[] = [];
+
+  manifest.modules.forEach((module) => {
+    module.declarations.forEach((declaration) => {
+      if( isCustomElement(declaration) ) {
+        out.push(declaration)
+      }
+    })
+  })
+
+  return out.map(element => element.tagName);
+}
 
 export const render = (combination: Combination, options?: Partial<RenderOptions>) => {
   const finalOptions: RenderOptions = {...defaultRenderOptions, ...options}
@@ -201,7 +215,8 @@ export const everyCase = (manifestOrPath?: string | Package) => {
         renderAll: (options?: Partial<RenderOptions>) => renderAll(innerCombinations, {...options, tag: tagName})
       }
     },
-    attributes: (tagName: string) => attributes(manifest, tagName)
+    attributes: (tagName: string) => attributes(manifest, tagName),
+    tagNames: () => tagNames(manifest)
   }
 }
 
