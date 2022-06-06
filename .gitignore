@@ -5,5 +5,7 @@ dist
 # local temporary files
 elements
 
+actions-runner
+
 .DS_Store
 Thumbs.db
