@@ -3,7 +3,8 @@
 ## Get attributes of specific element
 ```javascript
 const everyCase = require('everyCase')
-const ec = everyCase()
+const cem = requireCEM()
+const ec = everyCase(cem)
 
 const attributes = ec.attributes('my-button')
 
@@ -13,7 +14,8 @@ const attributes = ec.attributes('my-button')
 ## Get tagNames of all declared custom elements
 ```javascript
 const everyCase = require('everyCase')
-const ec = everyCase()
+const cem = requireCEM()
+const ec = everyCase(cem)
 
 const tagNames = ec.tagNames()
 
@@ -24,7 +26,8 @@ const tagNames = ec.tagNames()
 
 ```javascript
 const everyCase = require('everyCase')
-const ec = everyCase()
+const cem = requireCEM()
+const ec = everyCase(cem)
 
 const combinations = ec.combinations('my-button').all
 
@@ -53,7 +56,8 @@ const combinations = ec.combinations('my-button').all
 ## Get all combinations for given element with selected values
 ```javascript
 const everyCase = require('everyCase')
-const ec = everyCase()
+const cem = requireCEM()
+const ec = everyCase(cem)
 
 const options = {
   pick: ['size', 'variant']
@@ -77,7 +81,8 @@ const combinations = ec.combinations('my-button', options).all;
 ## Get combinations with mappedValues
 ```javascript
 const everyCase = require('everyCase')
-const ec = everyCase()
+const cem = requireCEM()
+const ec = everyCase(cem)
 
 const options = {
   pick: ['href', 'variant'],
@@ -99,7 +104,8 @@ const combinations = ec.combinations('my-button', options).all;
 ## Get all rendered templates for all combinations
 ```javascript
 const everyCase = require('everyCase')
-const ec = everyCase()
+const cem = requireCEM()
+const ec = everyCase(cem)
 
 const options = {
   pick: ['size', 'variant'],
@@ -121,7 +127,8 @@ const templates = ec.combinations('my-button', options).renderAll();
 ## Get all rendered templates for all combination with custom element's body
 ```javascript
 const everyCase = require('everyCase')
-const ec = everyCase()
+const cem = requireCEM()
+const ec = everyCase(cem)
 
 const options = {
   pick: ['size', 'variant'],
@@ -152,7 +159,8 @@ available fields:
 
 ```javascript
 const everyCase = require('everyCase')
-const ec = everyCase()
+const cem = requireCEM()
+const ec = everyCase(cem)
 
 const options = {
   pick: ['size'],
@@ -173,7 +181,8 @@ const template = ec.combinations('my-button', options).renderAll(renderOptions);
 ## Use other rendering engine for rendering usage cases
 ```javascript
 const everyCase = require('everyCase')
-const ec = everyCase()
+const cem = requireCEM()
+const ec = everyCase(cem)
 
 const options = {
   pick: ['size'],
@@ -194,7 +203,8 @@ const template = ec.combinations('my-button', options).renderAll(renderOptions);
 ## Get rendered template for specific combination
 ```javascript
 const everyCase = require('everyCase')
-const ec = everyCase()
+const cem = requireCEM()
+const ec = everyCase(cem)
 
 const options = {
   pick: ['size', 'variant'],
@@ -210,7 +220,8 @@ const template = ec.combinations('my-button', options).render(predicateFn);
 ## Get rendered template for specific combination
 ```javascript
 const everyCase = require('everyCase')
-const ec = everyCase()
+const cem = requireCEM()
+const ec = everyCase(cem)
 
 const options = {
   pick: ['size'],

@@ -3,7 +3,8 @@
     "outDir": "dist",
     "declaration": true,
     "emitDeclarationOnly": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "lib": ["ESNext", "DOM"]
   },
   "files": [
     "src/index.ts"

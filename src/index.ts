@@ -1,40 +1,15 @@
-import glob from 'tiny-glob/sync'
-import { readFileSync } from 'fs'
-import { resolve } from 'path'
-import { Package, CustomElement } from 'custom-elements-manifest/schema';
+import type { Package, CustomElement } from 'custom-elements-manifest/schema';
 import cartesian from 'cartesian'
-import { sync as closest } from 'closest-package'
-import Handlebars from 'handlebars'
+import {
+  Attribute,
+  Combination,
+  CombinationsOptions,
+  MappingFn,
+  RenderFunction,
+  RenderOptions,
+  RenderVariables
+} from './types'
 
-// TYPES
-export type MappingFn = (attributeName: string, value: any, elementData: CustomElement ) => [string, any];
-
-export type Combination = () => { [k: string]: any }
-
-export interface CombinationsOptions {
-  pick?: string[];
-  mapFn?: MappingFn;
-}
-
-export interface Attribute {
-  name: string;
-  value: string;
-}
-
-export interface RenderVariables {
-  tag: string;
-  attributes: Attribute[];
-  body?: string;
-}
-
-export type RenderFunction = (template: string, variables: { [k: string]: any }) => string
-
-export interface RenderOptions extends CombinationsOptions {
-  tag: string;
-  body?: string;
-  template: string;
-  renderFn: RenderFunction;
-}
 
 // UTILS
 const isObject = (a): a is object => Object.prototype.toString.call(a) === '[object Object]'
@@ -77,13 +52,12 @@ const attr = (attribute: Attribute) => {
   return ` ${attribute.name}="${attribute.value}"`
 }
 
-Handlebars.registerHelper('attr', attr)
-
-const defaultTemplate = `<{{tag}}{{#attributes}}{{attr .}}{{/attributes}}{{#unless body}}/{{/unless}}>{{#if body}}{{body}}</{{tag}}>{{/if}}`
+const defaultTemplate = `<{{tag}}{{body}}</{{tag}}>`
 
 const defaultRenderFn: RenderFunction = (template, variables) => {
-  const handlebarsTemplate = Handlebars.compile(template, {noEscape: true})
-  return handlebarsTemplate(variables);
+  const templateRegex = new RegExp(`(\{\{(${Object.keys(variables).join('|')})\}\})`, 'gm')
+  const output = template.replaceAll(templateRegex, (_a, _b, part) => variables[part])
+  return output
 }
 
 const defaultRenderOptions: RenderOptions = {
@@ -93,36 +67,6 @@ const defaultRenderOptions: RenderOptions = {
 }
 
 // MAIN FUNCTIONS
-const resolveManifestFilePath = (filePath?: string) => {
-
-  if( filePath ) {
-    return resolve(process.cwd(), filePath);
-  }
-
-  const packageJsonFilePath = closest(process.cwd(), json => json?.customElements)
-  if(packageJsonFilePath) {
-    return resolve(process.cwd(), packageJsonFilePath);
-  }
-
-  const manifestFilesFound = glob('**/custom-elements.json', {cwd: process.cwd()});
-  if( manifestFilesFound.length > 0 ) {
-    return  manifestFilesFound[0]
-  }
-
-  console.error(`Couldn't resolve custom-elements.json file.`)
-  return false;
-}
-
-const getManifestContents = (manifestFilePath?: string): Package => {
-  const manifestFile = resolveManifestFilePath(manifestFilePath);
-
-  if (manifestFile) {
-    const manifestFileContents = readFileSync(resolve(process.cwd(), manifestFile), {encoding: 'utf-8'})
-    return JSON.parse(manifestFileContents)
-  }
-
-  console.error('There was an error reading custom-elements.json file.')
-}
 
 const extractTypeValues = (type) => {
   if( type === 'boolean' ) {
@@ -132,9 +76,10 @@ const extractTypeValues = (type) => {
   return type.replace(/[ "']/g, '').split('\|').sort()
 }
 
-const getAttributesAndValues = (componentData: CustomElement, pickAttributes?: string[]) => {
+const getAttributesAndValues = (componentData: CustomElement, pickAttributes?: string[], omitAttributes?: string[]) => {
   const attributeEntries = componentData.attributes
     .filter(attribute => !!pickAttributes ? pickAttributes.includes(attribute.name) : true)
+    .filter(attribute => !!omitAttributes ? !omitAttributes.includes(attribute.name) : true)
     .map(attribute => [attribute.name, extractTypeValues(attribute.type.text)])
   return Object.fromEntries(attributeEntries);
 }
@@ -156,7 +101,7 @@ const mapCombinations = (elementData: CustomElement, mappings: MappingFn = (k, v
 
 export const combinations = (manifest: Package, tagName: string, options?: CombinationsOptions ) => {
   const componentData = findNode(manifest, (node) => node?.tagName === tagName)
-  const attributes = getAttributesAndValues(componentData, options?.pick || undefined);
+  const attributes = getAttributesAndValues(componentData, options?.pick || undefined, options?.omit || undefined);
   const sortedAttributes = sortObject(attributes);
   const allCombinations = cartesian(sortedAttributes);
   const clearCombinations = allCombinations.map(clearUndefined)
@@ -202,8 +147,7 @@ export const renderAll = (combinations: Combination[], options?: Partial<RenderO
   return combinations.map(combination => render(combination, options)).join('\n')
 }
 
-export const everyCase = (manifestOrPath?: string | Package) => {
-  const manifest = isString(manifestOrPath) || !manifestOrPath ? getManifestContents(manifestOrPath as string) : manifestOrPath;
+export const everyCase = (manifest?: Package) => {
 
   return {
     combinations: (tagName: string, options?: CombinationsOptions) => {
